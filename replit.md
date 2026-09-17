@@ -25,12 +25,16 @@ BioMed Trainer is a multilingual mobile study companion for medical and biomedic
 
 - `artifacts/biomed-trainer/app/` — Expo Router screens for the dashboard, review queue, profile, courses, lessons, and onboarding
 - `artifacts/biomed-trainer/context/StudyContext.tsx` — local study progress, language, streak, and onboarding persistence
+- `artifacts/biomed-trainer/i18n/locales/` — ru/kk/en interface dictionaries and i18next setup
+- `artifacts/biomed-trainer/data/content.ts` — three-language lesson and discipline content model
 - `artifacts/biomed-trainer/constants/colors.ts` — BioMed Trainer green visual tokens
 - `artifacts/biomed-trainer/assets/images/icon.png` — generated app icon
 
 ## Architecture decisions
 
 - The first build is frontend-first and uses AsyncStorage for local progress so the learning flow works without a backend.
+- Russian is the deterministic first-launch language; an explicit language selection is persisted locally and applied through i18next on the next launch.
+- Educational copy uses `LocalizedText` objects with `ru`, `kk`, and `en` fields so lessons can be fully translated without changing the content model.
 - Expo Router tabs separate Home, Review, and Profile while course and lesson screens use stack navigation.
 - The demo lesson includes a complete answer-checking loop with feedback and completion persistence.
 

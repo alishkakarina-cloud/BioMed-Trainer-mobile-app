@@ -6,22 +6,15 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppLogo } from '@/components/AppLogo';
 import { useColors } from '@/hooks/useColors';
 import { useStudy } from '@/context/StudyContext';
-
-const disciplines = [
-  { id: 'molecular-biology', title: 'Molecular biology', subtitle: 'DNA, RNA & gene expression', icon: 'activity', progress: 42 },
-  { id: 'medical-genetics', title: 'Medical genetics', subtitle: 'Inheritance & diagnosis', icon: 'git-branch', progress: 18 },
-  { id: 'biomedicine', title: 'Biomedicine', subtitle: 'Cells, therapy & omics', icon: 'layers', progress: 8 },
-  { id: 'parasitology', title: 'Parasitology', subtitle: 'Cycles, hosts & prevention', icon: 'target', progress: 0 },
-  { id: 'embryology', title: 'Embryology', subtitle: 'From gamete to organ', icon: 'heart', progress: 0 },
-  { id: 'ontogeny', title: 'Ontogeny', subtitle: 'Growth, aging & repair', icon: 'trending-up', progress: 0 },
-  { id: 'human-invasion', title: 'Human invasion', subtitle: 'Parasite–host interaction', icon: 'shield', progress: 0 },
-] as const;
+import { disciplines, getLocalizedText } from '@/data/content';
+import { useTranslation } from 'react-i18next';
 
 export default function HomeScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
-  const { streak, completedLessons } = useStudy();
+  const { streak, completedLessons, language } = useStudy();
+  const { t } = useTranslation();
   const topInset = insets.top + (Platform.OS === 'web' ? 67 : 0);
   const cardWidth = Math.min((width - 52) / 2, 210);
 
@@ -35,8 +28,8 @@ export default function HomeScreen() {
         <View style={styles.headerIdentity}>
           <AppLogo />
           <View>
-            <Text style={[styles.eyebrow, { color: colors.mutedForeground }]}>BIO • MED TRAINER</Text>
-            <Text style={[styles.greeting, { color: colors.foreground }]}>Good morning, Amina</Text>
+            <Text style={[styles.eyebrow, { color: colors.mutedForeground }]}>{t('home.eyebrow')}</Text>
+            <Text style={[styles.greeting, { color: colors.foreground }]}>{t('home.greeting')}</Text>
           </View>
         </View>
         <Pressable
@@ -54,17 +47,17 @@ export default function HomeScreen() {
           <Feather name="zap" size={17} color={colors.accentForeground} />
         </View>
         <View style={styles.streakCopy}>
-          <Text style={[styles.streakTitle, { color: colors.foreground }]}>{streak} day streak</Text>
-          <Text style={[styles.streakSub, { color: colors.mutedForeground }]}>Keep your rhythm going</Text>
+          <Text style={[styles.streakTitle, { color: colors.foreground }]}>{t('home.streakTitle', { count: streak })}</Text>
+          <Text style={[styles.streakSub, { color: colors.mutedForeground }]}>{t('home.streakSubtitle')}</Text>
         </View>
-        <Text style={[styles.streakAction, { color: colors.primary }]}>TODAY</Text>
+        <Text style={[styles.streakAction, { color: colors.primary }]}>{t('home.today')}</Text>
       </View>
 
       <View style={[styles.progressCard, { backgroundColor: colors.primary }]}>
         <View style={styles.progressCopy}>
-          <Text style={styles.progressLabel}>YOUR STUDY PLAN</Text>
-          <Text style={styles.progressHeadline}>Small sessions.{'\n'}Real progress.</Text>
-          <Text style={styles.progressDetail}>You've completed {completedLessons.length + 4} of 24 recommended topics.</Text>
+          <Text style={styles.progressLabel}>{t('home.studyPlanLabel')}</Text>
+          <Text style={styles.progressHeadline}>{t('home.studyPlanHeadline1')}{'\n'}{t('home.studyPlanHeadline2')}</Text>
+          <Text style={styles.progressDetail}>{t('home.studyPlanDetail', { count: completedLessons.length + 4 })}</Text>
           <View style={styles.progressTrack}><View style={[styles.progressFill, { width: '27%' }]} /></View>
         </View>
         <View style={styles.progressCircle}>
@@ -74,8 +67,8 @@ export default function HomeScreen() {
       </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Continue learning</Text>
-        <Pressable onPress={() => router.push('/course/molecular-biology')}><Text style={[styles.seeAll, { color: colors.primary }]}>VIEW COURSE</Text></Pressable>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{t('home.continueTitle')}</Text>
+        <Pressable onPress={() => router.push('/course/molecular-biology')}><Text style={[styles.seeAll, { color: colors.primary }]}>{t('home.viewCourse')}</Text></Pressable>
       </View>
       <Pressable
         onPress={() => router.push('/lesson/molecular-biology-dna')}
@@ -87,17 +80,17 @@ export default function HomeScreen() {
           {[0, 1, 2, 3].map((item) => <View key={item} style={[styles.dnaRung, { top: 18 + item * 13, backgroundColor: colors.primary }]} />)}
         </View>
         <View style={styles.lessonCopy}>
-          <Text style={[styles.lessonKicker, { color: colors.primary }]}>MOLECULAR BIOLOGY · 12 MIN</Text>
-          <Text style={[styles.lessonTitle, { color: colors.foreground }]}>DNA replication</Text>
-          <Text style={[styles.lessonSub, { color: colors.mutedForeground }]}>Leading & lagging strands</Text>
+          <Text style={[styles.lessonKicker, { color: colors.primary }]}>{t('home.lessonKicker')}</Text>
+          <Text style={[styles.lessonTitle, { color: colors.foreground }]}>{t('home.lessonTitle')}</Text>
+          <Text style={[styles.lessonSub, { color: colors.mutedForeground }]}>{t('home.lessonSubtitle')}</Text>
           <View style={styles.lessonMeta}><View style={[styles.miniProgressTrack, { backgroundColor: colors.secondary }]}><View style={[styles.miniProgressFill, { backgroundColor: colors.primary, width: '65%' }]} /></View><Text style={[styles.lessonPercent, { color: colors.mutedForeground }]}>65%</Text></View>
         </View>
         <View style={[styles.playButton, { backgroundColor: colors.foreground }]}><Feather name="play" size={14} color={colors.card} /></View>
       </Pressable>
 
       <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Explore disciplines</Text>
-        <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>7 TOTAL</Text>
+        <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{t('home.exploreTitle')}</Text>
+        <Text style={[styles.countLabel, { color: colors.mutedForeground }]}>{t('home.total')}</Text>
       </View>
       <View style={styles.grid}>
         {disciplines.map((discipline) => (
@@ -107,10 +100,10 @@ export default function HomeScreen() {
             style={({ pressed }) => [styles.disciplineCard, { width: cardWidth, backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.84 : 1 }]}
           >
             <View style={[styles.disciplineIcon, { backgroundColor: discipline.progress ? colors.secondary : colors.muted }]}>
-              <Feather name={discipline.icon} size={18} color={discipline.progress ? colors.primary : colors.mutedForeground} />
+              <Feather name={discipline.icon as keyof typeof Feather.glyphMap} size={18} color={discipline.progress ? colors.primary : colors.mutedForeground} />
             </View>
-            <Text style={[styles.disciplineTitle, { color: colors.foreground }]} numberOfLines={2}>{discipline.title}</Text>
-            <Text style={[styles.disciplineSubtitle, { color: colors.mutedForeground }]} numberOfLines={2}>{discipline.subtitle}</Text>
+            <Text style={[styles.disciplineTitle, { color: colors.foreground }]} numberOfLines={2}>{getLocalizedText(discipline.title, language)}</Text>
+            <Text style={[styles.disciplineSubtitle, { color: colors.mutedForeground }]} numberOfLines={2}>{getLocalizedText(discipline.subtitle, language)}</Text>
             <View style={styles.disciplineFooter}>
               <View style={[styles.miniProgressTrack, { backgroundColor: colors.secondary }]}><View style={[styles.miniProgressFill, { backgroundColor: colors.primary, width: `${discipline.progress}%` }]} /></View>
               <Text style={[styles.disciplinePercent, { color: colors.mutedForeground }]}>{discipline.progress}%</Text>

@@ -4,56 +4,59 @@ import React from 'react';
 import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
+import { disciplines, courseTopics, getLocalizedText } from '@/data/content';
+import { useStudy } from '@/context/StudyContext';
+import { useTranslation } from 'react-i18next';
 
-const courseInfo: Record<string, { title: string; eyebrow: string; description: string; icon: string }> = {
-  'molecular-biology': { title: 'Molecular biology', eyebrow: 'DISCIPLINE 01', description: 'Understand the molecular language of life, from DNA structure to gene expression.', icon: 'activity' },
-  'medical-genetics': { title: 'Medical genetics', eyebrow: 'DISCIPLINE 02', description: 'Read inheritance patterns and connect genetic mechanisms to diagnosis.', icon: 'git-branch' },
-  biomedicine: { title: 'Biomedicine', eyebrow: 'DISCIPLINE 03', description: 'Explore the cellular technologies shaping the future of medicine.', icon: 'layers' },
-};
-
-const topics = [
-  { title: 'DNA replication', duration: '12 min', type: 'Interactive lesson', free: true, complete: false },
-  { title: 'RNA transcription & processing', duration: '10 min', type: 'Theory + visual', free: true, complete: false },
-  { title: 'Translation & the genetic code', duration: '14 min', type: 'Practice set', free: false, complete: false },
-  { title: 'Regulation of gene expression', duration: '16 min', type: 'Clinical case', free: false, complete: false },
-  { title: 'Mutations & DNA repair', duration: '13 min', type: 'Interactive lesson', free: false, complete: false },
+const topicMeta = [
+  { duration: 12, typeKey: 'course.interactiveLesson', free: true },
+  { duration: 10, typeKey: 'course.theoryVisual', free: true },
+  { duration: 14, typeKey: 'course.practiceSet', free: false },
+  { duration: 16, typeKey: 'course.clinicalCase', free: false },
+  { duration: 13, typeKey: 'course.interactiveLesson', free: false },
 ];
 
 export default function CourseScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const course = courseInfo[id ?? 'molecular-biology'] ?? courseInfo['molecular-biology'];
+  const { language } = useStudy();
+  const { t } = useTranslation();
+  const course = disciplines.find((item) => item.id === id) ?? disciplines[0];
+  const courseNumber = disciplines.findIndex((item) => item.id === course.id) + 1;
   const topInset = insets.top + (Platform.OS === 'web' ? 67 : 0);
   return (
     <ScrollView style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={{ paddingBottom: insets.bottom + 30 }} showsVerticalScrollIndicator={false}>
       <View style={[styles.hero, { backgroundColor: colors.foreground, paddingTop: topInset + 10 }]}>
         <Pressable onPress={() => router.back()} style={styles.back}><Feather name="arrow-left" size={19} color="#FFFFFF" /></Pressable>
         <View style={[styles.heroIcon, { backgroundColor: colors.primary }]}><Feather name={course.icon as keyof typeof Feather.glyphMap} size={23} color="#FFFFFF" /></View>
-        <Text style={styles.eyebrow}>{course.eyebrow}</Text>
-        <Text style={styles.title}>{course.title}</Text>
-        <Text style={styles.description}>{course.description}</Text>
-        <View style={styles.courseMeta}><Text style={styles.metaText}>27% complete</Text><View style={styles.heroTrack}><View style={[styles.heroFill, { width: '27%' }]} /></View><Text style={styles.metaText}>2.5 hrs</Text></View>
+        <Text style={styles.eyebrow}>{t('course.discipline', { number: String(courseNumber).padStart(2, '0') })}</Text>
+        <Text style={styles.title}>{getLocalizedText(course.title, language)}</Text>
+        <Text style={styles.description}>{getLocalizedText(course.description, language)}</Text>
+        <View style={styles.courseMeta}><Text style={styles.metaText}>{t('course.complete', { percent: 27 })}</Text><View style={styles.heroTrack}><View style={[styles.heroFill, { width: '27%' }]} /></View><Text style={styles.metaText}>{t('course.hours')}</Text></View>
       </View>
       <View style={styles.body}>
-        <View style={styles.bodyHeading}><Text style={[styles.sectionTitle, { color: colors.foreground }]}>Course topics</Text><Text style={[styles.topicCount, { color: colors.mutedForeground }]}>{topics.length} TOPICS</Text></View>
+        <View style={styles.bodyHeading}><Text style={[styles.sectionTitle, { color: colors.foreground }]}>{t('course.courseTopics')}</Text><Text style={[styles.topicCount, { color: colors.mutedForeground }]}>{t('course.topicCount', { count: courseTopics.length })}</Text></View>
         <View style={styles.topicList}>
-          {topics.map((topic, index) => (
+          {courseTopics.map((topic, index) => {
+            const meta = topicMeta[index];
+            return (
             <Pressable
-              key={topic.title}
-              disabled={!topic.free}
+              key={topic.ru}
+              disabled={!meta.free}
               onPress={() => router.push('/lesson/molecular-biology-dna')}
               style={({ pressed }) => [styles.topicRow, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.82 : 1 }]}
             >
-              <View style={[styles.topicNumber, { backgroundColor: index === 0 ? colors.primary : colors.muted }]}>{topic.free ? <Text style={[styles.numberText, { color: index === 0 ? '#FFFFFF' : colors.mutedForeground }]}>{index + 1}</Text> : <Feather name="lock" size={13} color={colors.mutedForeground} />}</View>
-              <View style={{ flex: 1 }}><Text style={[styles.topicTitle, { color: colors.foreground }]}>{topic.title}</Text><Text style={[styles.topicDetail, { color: colors.mutedForeground }]}>{topic.type} · {topic.duration}</Text></View>
-              {topic.free ? <Feather name="chevron-right" size={18} color={colors.primary} /> : <Text style={[styles.lockedLabel, { color: colors.mutedForeground }]}>PRO</Text>}
+              <View style={[styles.topicNumber, { backgroundColor: index === 0 ? colors.primary : colors.muted }]}>{meta.free ? <Text style={[styles.numberText, { color: index === 0 ? '#FFFFFF' : colors.mutedForeground }]}>{index + 1}</Text> : <Feather name="lock" size={13} color={colors.mutedForeground} />}</View>
+              <View style={{ flex: 1 }}><Text style={[styles.topicTitle, { color: colors.foreground }]}>{getLocalizedText(topic, language)}</Text><Text style={[styles.topicDetail, { color: colors.mutedForeground }]}>{t(meta.typeKey)} · {t('course.minutes', { count: meta.duration })}</Text></View>
+              {meta.free ? <Feather name="chevron-right" size={18} color={colors.primary} /> : <Text style={[styles.lockedLabel, { color: colors.mutedForeground }]}>{t('course.pro')}</Text>}
             </Pressable>
-          ))}
+            );
+          })}
         </View>
         <View style={[styles.unlockCard, { backgroundColor: colors.secondary }]}>
           <View style={[styles.unlockIcon, { backgroundColor: colors.accent }]}><Feather name="unlock" size={16} color={colors.accentForeground} /></View>
-          <View style={{ flex: 1 }}><Text style={[styles.unlockTitle, { color: colors.foreground }]}>Open the full course</Text><Text style={[styles.unlockSub, { color: colors.mutedForeground }]}>Get every topic, case and practice set.</Text></View>
+          <View style={{ flex: 1 }}><Text style={[styles.unlockTitle, { color: colors.foreground }]}>{t('course.unlockTitle')}</Text><Text style={[styles.unlockSub, { color: colors.mutedForeground }]}>{t('course.unlockSubtitle')}</Text></View>
           <Feather name="arrow-right" size={18} color={colors.primary} />
         </View>
       </View>

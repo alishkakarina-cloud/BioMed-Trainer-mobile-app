@@ -1,11 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { PropsWithChildren, createContext, useContext, useEffect, useMemo, useState } from 'react';
+import i18n, { AppLanguage, supportedLanguages } from '@/i18n';
 
-export type Language = 'ru' | 'kk' | 'en';
+export type Language = AppLanguage;
 
 type StudyState = {
   completedLessons: string[];
   language: Language;
+  languageSelected: boolean;
   streak: number;
   hasOnboarded: boolean;
 };
@@ -20,7 +22,8 @@ type StudyContextValue = StudyState & {
 const STORAGE_KEY = 'biomed-trainer-study-state';
 const initialState: StudyState = {
   completedLessons: [],
-  language: 'en',
+  language: 'ru',
+  languageSelected: false,
   streak: 7,
   hasOnboarded: false,
 };
@@ -35,10 +38,18 @@ export function StudyProvider({ children }: PropsWithChildren) {
     AsyncStorage.getItem(STORAGE_KEY)
       .then((stored) => {
         if (stored) {
-          setState({ ...initialState, ...JSON.parse(stored) } as StudyState);
+          const parsed = JSON.parse(stored) as Partial<StudyState>;
+          const hasUserLanguage = parsed.languageSelected === true && supportedLanguages.includes(parsed.language as AppLanguage);
+          const nextLanguage = hasUserLanguage ? parsed.language as AppLanguage : 'ru';
+          setState({ ...initialState, ...parsed, language: nextLanguage, languageSelected: hasUserLanguage });
+          void i18n.changeLanguage(nextLanguage);
+        } else {
+          void i18n.changeLanguage('ru');
         }
       })
-      .catch(() => undefined)
+      .catch(() => {
+        void i18n.changeLanguage('ru');
+      })
       .finally(() => setHydrated(true));
   }, []);
 
@@ -55,7 +66,10 @@ export function StudyProvider({ children }: PropsWithChildren) {
         if (state.completedLessons.includes(lessonId)) return;
         persist({ ...state, completedLessons: [...state.completedLessons, lessonId] });
       },
-      setLanguage: (language) => persist({ ...state, language }),
+      setLanguage: (language) => {
+        void i18n.changeLanguage(language);
+        persist({ ...state, language, languageSelected: true });
+      },
       finishOnboarding: () => persist({ ...state, hasOnboarded: true }),
     }),
     [hydrated, state],

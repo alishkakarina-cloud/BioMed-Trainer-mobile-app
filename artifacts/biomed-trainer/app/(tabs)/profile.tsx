@@ -6,47 +6,49 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { AppLogo } from '@/components/AppLogo';
 import { useColors } from '@/hooks/useColors';
 import { Language, useStudy } from '@/context/StudyContext';
+import { useTranslation } from 'react-i18next';
 
-const languages: { code: Language; label: string; name: string }[] = [
-  { code: 'en', label: 'EN', name: 'English' },
-  { code: 'ru', label: 'РУ', name: 'Русский' },
-  { code: 'kk', label: 'ҚЗ', name: 'Қазақша' },
+const languages: { code: Language; labelKey: string }[] = [
+  { code: 'en', labelKey: 'languages.shortEn' },
+  { code: 'ru', labelKey: 'languages.shortRu' },
+  { code: 'kk', labelKey: 'languages.shortKk' },
 ];
 
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { language, setLanguage, completedLessons } = useStudy();
+  const { t } = useTranslation();
   const topInset = insets.top + (Platform.OS === 'web' ? 67 : 0);
   return (
     <ScrollView style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={{ paddingTop: topInset, paddingBottom: insets.bottom + 112 }} showsVerticalScrollIndicator={false}>
-      <View style={styles.header}><Text style={[styles.kicker, { color: colors.primary }]}>YOUR SPACE</Text><Text style={[styles.title, { color: colors.foreground }]}>Profile</Text></View>
+      <View style={styles.header}><Text style={[styles.kicker, { color: colors.primary }]}>{t('profile.kicker')}</Text><Text style={[styles.title, { color: colors.foreground }]}>{t('profile.title')}</Text></View>
       <View style={[styles.profileCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
         <AppLogo size={54} />
-        <View style={{ flex: 1, marginLeft: 13 }}><Text style={[styles.name, { color: colors.foreground }]}>Amina Sadykova</Text><Text style={[styles.email, { color: colors.mutedForeground }]}>Medical student · Year 2</Text></View>
+        <View style={{ flex: 1, marginLeft: 13 }}><Text style={[styles.name, { color: colors.foreground }]}>{t('profile.studentName')}</Text><Text style={[styles.email, { color: colors.mutedForeground }]}>{t('profile.studentMeta')}</Text></View>
         <Pressable style={[styles.editButton, { backgroundColor: colors.secondary }]}><Feather name="edit-2" size={15} color={colors.primary} /></Pressable>
       </View>
       <View style={styles.statsRow}>
-        <View style={[styles.stat, { backgroundColor: colors.card, borderColor: colors.border }]}><Text style={[styles.statNumber, { color: colors.foreground }]}>27%</Text><Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Overall progress</Text></View>
-        <View style={[styles.stat, { backgroundColor: colors.card, borderColor: colors.border }]}><Text style={[styles.statNumber, { color: colors.foreground }]}>{completedLessons.length + 4}</Text><Text style={[styles.statLabel, { color: colors.mutedForeground }]}>Topics completed</Text></View>
+        <View style={[styles.stat, { backgroundColor: colors.card, borderColor: colors.border }]}><Text style={[styles.statNumber, { color: colors.foreground }]}>27%</Text><Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{t('profile.overallProgress')}</Text></View>
+        <View style={[styles.stat, { backgroundColor: colors.card, borderColor: colors.border }]}><Text style={[styles.statNumber, { color: colors.foreground }]}>{completedLessons.length + 4}</Text><Text style={[styles.statLabel, { color: colors.mutedForeground }]}>{t('profile.topicsCompleted')}</Text></View>
       </View>
       <Pressable onPress={() => router.push('/onboarding')} style={({ pressed }) => [styles.planCard, { backgroundColor: colors.primary, opacity: pressed ? 0.87 : 1 }]}>
-        <View style={{ flex: 1 }}><Text style={styles.planKicker}>FREE PLAN</Text><Text style={styles.planTitle}>Unlock all 7 disciplines</Text><Text style={styles.planSub}>Go deeper with unlimited practice and cases.</Text></View>
+        <View style={{ flex: 1 }}><Text style={styles.planKicker}>{t('profile.planKicker')}</Text><Text style={styles.planTitle}>{t('profile.planTitle')}</Text><Text style={styles.planSub}>{t('profile.planSubtitle')}</Text></View>
         <View style={styles.planArrow}><Feather name="arrow-up-right" size={19} color={colors.primary} /></View>
       </Pressable>
-      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Preferences</Text>
+      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{t('profile.preferences')}</Text>
       <View style={[styles.preferenceCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        <View style={styles.preferenceHeading}><View style={[styles.preferenceIcon, { backgroundColor: colors.secondary }]}><Feather name="globe" size={17} color={colors.primary} /></View><View><Text style={[styles.preferenceTitle, { color: colors.foreground }]}>Learning language</Text><Text style={[styles.preferenceSub, { color: colors.mutedForeground }]}>Choose your content language</Text></View></View>
+        <View style={styles.preferenceHeading}><View style={[styles.preferenceIcon, { backgroundColor: colors.secondary }]}><Feather name="globe" size={17} color={colors.primary} /></View><View><Text style={[styles.preferenceTitle, { color: colors.foreground }]}>{t('profile.languageTitle')}</Text><Text style={[styles.preferenceSub, { color: colors.mutedForeground }]}>{t('profile.languageSubtitle')}</Text></View></View>
         <View style={styles.languageRow}>
-          {languages.map((item) => <Pressable key={item.code} onPress={() => setLanguage(item.code)} style={[styles.languageButton, { backgroundColor: language === item.code ? colors.primary : colors.background, borderColor: language === item.code ? colors.primary : colors.border }]}><Text style={[styles.languageLabel, { color: language === item.code ? colors.primaryForeground : colors.mutedForeground }]}>{item.label}</Text></Pressable>)}
+          {languages.map((item) => <Pressable key={item.code} onPress={() => setLanguage(item.code)} style={[styles.languageButton, { backgroundColor: language === item.code ? colors.primary : colors.background, borderColor: language === item.code ? colors.primary : colors.border }]}><Text style={[styles.languageLabel, { color: language === item.code ? colors.primaryForeground : colors.mutedForeground }]}>{t(item.labelKey)}</Text></Pressable>)}
         </View>
       </View>
       <View style={[styles.menuCard, { backgroundColor: colors.card, borderColor: colors.border }]}>
-        {[
-          { icon: 'bookmark', title: 'Saved topics', detail: 'Your personal collection' },
-          { icon: 'credit-card', title: 'Subscription', detail: 'Manage your plan' },
-          { icon: 'help-circle', title: 'Help & feedback', detail: 'We are here to help' },
-        ].map((item, index) => <Pressable key={item.title} style={[styles.menuRow, index < 2 && { borderBottomWidth: 1, borderBottomColor: colors.border }]}><View style={[styles.menuIcon, { backgroundColor: colors.muted }]}><Feather name={item.icon as keyof typeof Feather.glyphMap} size={16} color={colors.primary} /></View><View style={{ flex: 1 }}><Text style={[styles.menuTitle, { color: colors.foreground }]}>{item.title}</Text><Text style={[styles.menuSub, { color: colors.mutedForeground }]}>{item.detail}</Text></View><Feather name="chevron-right" size={17} color={colors.mutedForeground} /></Pressable>)}
+          {[
+          { icon: 'bookmark', titleKey: 'profile.savedTopics', detailKey: 'profile.savedTopicsDetail' },
+          { icon: 'credit-card', titleKey: 'profile.subscription', detailKey: 'profile.subscriptionDetail' },
+          { icon: 'help-circle', titleKey: 'profile.help', detailKey: 'profile.helpDetail' },
+        ].map((item, index) => <Pressable key={item.titleKey} style={[styles.menuRow, index < 2 && { borderBottomWidth: 1, borderBottomColor: colors.border }]}><View style={[styles.menuIcon, { backgroundColor: colors.muted }]}><Feather name={item.icon as keyof typeof Feather.glyphMap} size={16} color={colors.primary} /></View><View style={{ flex: 1 }}><Text style={[styles.menuTitle, { color: colors.foreground }]}>{t(item.titleKey)}</Text><Text style={[styles.menuSub, { color: colors.mutedForeground }]}>{t(item.detailKey)}</Text></View><Feather name="chevron-right" size={17} color={colors.mutedForeground} /></Pressable>)}
       </View>
     </ScrollView>
   );

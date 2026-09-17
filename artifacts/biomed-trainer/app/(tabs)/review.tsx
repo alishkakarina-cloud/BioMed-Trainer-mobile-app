@@ -5,45 +5,47 @@ import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-n
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
 import { useStudy } from '@/context/StudyContext';
+import { useTranslation } from 'react-i18next';
 
 const items = [
-  { id: 'dna-review', lessonId: 'molecular-biology-dna', title: 'DNA replication', detail: 'You missed 2 questions last time', tag: 'MOLECULAR BIOLOGY', icon: 'activity' },
-  { id: 'gene-review', lessonId: 'molecular-biology-dna', title: 'Gene expression', detail: 'Due for a quick refresh', tag: 'MOLECULAR BIOLOGY', icon: 'git-branch' },
+  { id: 'dna-review', lessonId: 'molecular-biology-dna', titleKey: 'home.lessonTitle', detailKey: 'review.dnaDetail', icon: 'activity' },
+  { id: 'gene-review', lessonId: 'molecular-biology-dna', titleKey: 'disciplines.molecular.title', detailKey: 'review.geneDetail', icon: 'git-branch' },
 ];
 
 export default function ReviewScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { streak } = useStudy();
+  const { t } = useTranslation();
   const topInset = insets.top + (Platform.OS === 'web' ? 67 : 0);
   return (
     <ScrollView style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={{ paddingTop: topInset, paddingBottom: insets.bottom + 112 }} showsVerticalScrollIndicator={false}>
       <View style={styles.header}>
         <View>
-          <Text style={[styles.kicker, { color: colors.primary }]}>SMART REVIEW</Text>
-          <Text style={[styles.title, { color: colors.foreground }]}>Your review queue</Text>
-          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>Short repetitions that make knowledge stick.</Text>
+          <Text style={[styles.kicker, { color: colors.primary }]}>{t('review.kicker')}</Text>
+          <Text style={[styles.title, { color: colors.foreground }]}>{t('review.title')}</Text>
+          <Text style={[styles.subtitle, { color: colors.mutedForeground }]}>{t('review.subtitle')}</Text>
         </View>
         <View style={[styles.streakBadge, { backgroundColor: colors.secondary }]}><Feather name="zap" size={15} color={colors.primary} /><Text style={[styles.streakText, { color: colors.primary }]}>{streak}</Text></View>
       </View>
       <View style={[styles.summaryCard, { backgroundColor: colors.foreground }]}>
         <View style={[styles.summaryIcon, { backgroundColor: colors.primary }]}><Feather name="refresh-cw" size={18} color={colors.card} /></View>
-        <View style={{ flex: 1 }}><Text style={styles.summaryTitle}>2 topics ready</Text><Text style={styles.summarySub}>About 8 minutes to complete today</Text></View>
+        <View style={{ flex: 1 }}><Text style={styles.summaryTitle}>{t('review.summaryTitle')}</Text><Text style={styles.summarySub}>{t('review.summarySubtitle')}</Text></View>
         <Feather name="arrow-up-right" size={18} color="#BEE6C9" />
       </View>
-      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>Recommended today</Text>
+      <Text style={[styles.sectionTitle, { color: colors.foreground }]}>{t('review.sectionTitle')}</Text>
       <View style={styles.list}>
         {items.map((item, index) => (
           <Pressable key={item.id} onPress={() => router.push({ pathname: '/lesson/[id]', params: { id: item.lessonId } })} style={({ pressed }) => [styles.reviewCard, { backgroundColor: colors.card, borderColor: colors.border, opacity: pressed ? 0.84 : 1 }]}>
             <View style={[styles.reviewIcon, { backgroundColor: index === 0 ? colors.secondary : '#F3EBDD' }]}><Feather name={item.icon as keyof typeof Feather.glyphMap} size={19} color={index === 0 ? colors.primary : '#B17A43'} /></View>
-            <View style={{ flex: 1, paddingRight: 8 }}><Text style={[styles.itemTag, { color: colors.mutedForeground }]}>{item.tag}</Text><Text style={[styles.itemTitle, { color: colors.foreground }]}>{item.title}</Text><Text style={[styles.itemDetail, { color: colors.mutedForeground }]}>{item.detail}</Text></View>
+            <View style={{ flex: 1, paddingRight: 8 }}><Text style={[styles.itemTag, { color: colors.mutedForeground }]}>{t('disciplines.molecular.title').toUpperCase()}</Text><Text style={[styles.itemTitle, { color: colors.foreground }]}>{t(item.titleKey)}</Text><Text style={[styles.itemDetail, { color: colors.mutedForeground }]}>{t(item.detailKey)}</Text></View>
             <View style={[styles.arrow, { borderColor: colors.border }]}><Feather name="chevron-right" size={16} color={colors.primary} /></View>
           </Pressable>
         ))}
       </View>
       <View style={[styles.tip, { backgroundColor: colors.secondary }]}>
         <Feather name="info" size={16} color={colors.primary} />
-        <Text style={[styles.tipText, { color: colors.secondaryForeground }]}>Reviewing a little every day is more effective than one long study session.</Text>
+        <Text style={[styles.tipText, { color: colors.secondaryForeground }]}>{t('review.tip')}</Text>
       </View>
     </ScrollView>
   );

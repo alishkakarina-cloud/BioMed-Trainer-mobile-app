@@ -6,23 +6,19 @@ import { Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-n
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useColors } from '@/hooks/useColors';
 import { useStudy } from '@/context/StudyContext';
-
-const questions = [
-  { prompt: 'Which enzyme separates the two DNA strands at the replication fork?', options: ['DNA ligase', 'Helicase', 'RNA polymerase', 'Telomerase'], answer: 1, explanation: 'Helicase breaks the hydrogen bonds between base pairs, opening the double helix.' },
-  { prompt: 'What is added to the new strand in the 5′ → 3′ direction?', options: ['Nucleotides', 'Amino acids', 'Ribosomes', 'Introns'], answer: 0, explanation: 'DNA polymerase adds complementary nucleotides to build the new strand.' },
-  { prompt: 'Why are Okazaki fragments formed?', options: ['DNA is circular', 'The template is damaged', 'DNA polymerase works in one direction', 'RNA is unstable'], answer: 2, explanation: 'The lagging strand is built in short fragments because DNA polymerase only works 5′ → 3′.' },
-];
+import { getLocalizedText, lessonQuestions } from '@/data/content';
+import { useTranslation } from 'react-i18next';
 
 export default function LessonScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { completeLesson } = useStudy();
+  const { completeLesson, language } = useStudy();
+  const { t } = useTranslation();
   const [step, setStep] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
-  const question = questions[step];
-  const finished = checked && step === questions.length - 1 && selected === question.answer;
+  const question = lessonQuestions[step];
   const topInset = insets.top + (Platform.OS === 'web' ? 67 : 0);
 
   const choose = (index: number) => {
@@ -34,10 +30,10 @@ export default function LessonScreen() {
     if (selected === null) return;
     setChecked(true);
     Haptics.notificationAsync(selected === question.answer ? Haptics.NotificationFeedbackType.Success : Haptics.NotificationFeedbackType.Error).catch(() => undefined);
-    if (selected === question.answer && step === questions.length - 1) completeLesson(id ?? 'molecular-biology-dna');
+    if (selected === question.answer && step === lessonQuestions.length - 1) completeLesson(id ?? 'molecular-biology-dna');
   };
   const next = () => {
-    if (step < questions.length - 1) {
+    if (step < lessonQuestions.length - 1) {
       setStep(step + 1);
       setSelected(null);
       setChecked(false);
@@ -48,34 +44,34 @@ export default function LessonScreen() {
     <ScrollView style={[styles.screen, { backgroundColor: colors.background }]} contentContainerStyle={{ paddingBottom: insets.bottom + 30 }} showsVerticalScrollIndicator={false}>
       <View style={[styles.top, { paddingTop: topInset + 10 }]}>
         <Pressable onPress={() => router.back()} style={styles.back}><Feather name="arrow-left" size={19} color={colors.foreground} /></Pressable>
-        <Text style={[styles.topTitle, { color: colors.foreground }]}>DNA replication</Text>
-        <Text style={[styles.stepLabel, { color: colors.mutedForeground }]}>{step + 1} / {questions.length}</Text>
+        <Text style={[styles.topTitle, { color: colors.foreground }]}>{t('home.lessonTitle')}</Text>
+        <Text style={[styles.stepLabel, { color: colors.mutedForeground }]}>{step + 1} / {lessonQuestions.length}</Text>
       </View>
-      <View style={styles.progressTrack}><View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${((step + 1) / questions.length) * 100}%` }]} /></View>
+      <View style={styles.progressTrack}><View style={[styles.progressFill, { backgroundColor: colors.primary, width: `${((step + 1) / lessonQuestions.length) * 100}%` }]} /></View>
       <View style={styles.body}>
-        <Text style={[styles.kicker, { color: colors.primary }]}>INTERACTIVE PRACTICE</Text>
-        <Text style={[styles.heading, { color: colors.foreground }]}>The replication fork</Text>
-        <Text style={[styles.intro, { color: colors.mutedForeground }]}>Build a clear mental model of how DNA copies itself before cell division.</Text>
+        <Text style={[styles.kicker, { color: colors.primary }]}>{t('lesson.interactivePractice')}</Text>
+        <Text style={[styles.heading, { color: colors.foreground }]}>{t('lesson.heading')}</Text>
+        <Text style={[styles.intro, { color: colors.mutedForeground }]}>{t('lesson.intro')}</Text>
         <View style={[styles.visual, { backgroundColor: colors.card, borderColor: colors.border }]}>
-          <View style={styles.visualTop}><Text style={[styles.visualLabel, { color: colors.mutedForeground }]}>DNA REPLICATION</Text><View style={[styles.liveBadge, { backgroundColor: colors.secondary }]}><View style={[styles.liveDot, { backgroundColor: colors.primary }]} /><Text style={[styles.liveText, { color: colors.primary }]}>VISUAL</Text></View></View>
+          <View style={styles.visualTop}><Text style={[styles.visualLabel, { color: colors.mutedForeground }]}>{t('lesson.visualLabel')}</Text><View style={[styles.liveBadge, { backgroundColor: colors.secondary }]}><View style={[styles.liveDot, { backgroundColor: colors.primary }]} /><Text style={[styles.liveText, { color: colors.primary }]}>{t('lesson.visualBadge')}</Text></View></View>
           <View style={styles.helix}>
             {[0, 1, 2, 3, 4].map((item) => <View key={item} style={[styles.basePair, { top: 25 + item * 21 }]}><View style={[styles.base, { backgroundColor: item % 2 ? colors.accent : colors.primary }]} /><View style={[styles.connector, { backgroundColor: colors.border }]} /><View style={[styles.base, { backgroundColor: item % 2 ? colors.secondary : '#C5E6CC' }]} /></View>)}
             <View style={[styles.helixRail, { left: 45, backgroundColor: colors.primary }]} /><View style={[styles.helixRail, { right: 45, backgroundColor: colors.accent }]} />
           </View>
-          <View style={styles.legend}><View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.primary }]} /><Text style={[styles.legendText, { color: colors.mutedForeground }]}>Leading strand</Text></View><View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.accent }]} /><Text style={[styles.legendText, { color: colors.mutedForeground }]}>New strand</Text></View></View>
+          <View style={styles.legend}><View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.primary }]} /><Text style={[styles.legendText, { color: colors.mutedForeground }]}>{t('lesson.leadingStrand')}</Text></View><View style={styles.legendItem}><View style={[styles.legendDot, { backgroundColor: colors.accent }]} /><Text style={[styles.legendText, { color: colors.mutedForeground }]}>{t('lesson.newStrand')}</Text></View></View>
         </View>
-        <View style={styles.questionHeader}><Text style={[styles.questionLabel, { color: colors.mutedForeground }]}>CHECK YOUR UNDERSTANDING</Text><Text style={[styles.questionNumber, { color: colors.primary }]}>0{step + 1}</Text></View>
-        <Text style={[styles.question, { color: colors.foreground }]}>{question.prompt}</Text>
+        <View style={styles.questionHeader}><Text style={[styles.questionLabel, { color: colors.mutedForeground }]}>{t('lesson.checkUnderstanding')}</Text><Text style={[styles.questionNumber, { color: colors.primary }]}>0{step + 1}</Text></View>
+        <Text style={[styles.question, { color: colors.foreground }]}>{getLocalizedText(question.prompt, language)}</Text>
         <View style={styles.options}>
           {question.options.map((option, index) => {
             const isSelected = selected === index;
             const isCorrect = checked && index === question.answer;
             const isWrong = checked && isSelected && !isCorrect;
-            return <Pressable key={option} onPress={() => choose(index)} style={[styles.option, { backgroundColor: isCorrect ? '#E5F3E8' : isWrong ? '#F8E8E5' : isSelected ? colors.secondary : colors.card, borderColor: isCorrect ? colors.primary : isWrong ? colors.destructive : isSelected ? colors.primary : colors.border }]}><View style={[styles.optionDot, { borderColor: isCorrect ? colors.primary : isWrong ? colors.destructive : isSelected ? colors.primary : colors.border, backgroundColor: isCorrect ? colors.primary : isWrong ? colors.destructive : 'transparent' }]}>{(isCorrect || isWrong) && <Feather name={isCorrect ? 'check' : 'x'} size={11} color="#FFFFFF" />}</View><Text style={[styles.optionText, { color: colors.foreground }]}>{option}</Text></Pressable>;
+            return <Pressable key={option.en} onPress={() => choose(index)} style={[styles.option, { backgroundColor: isCorrect ? '#E5F3E8' : isWrong ? '#F8E8E5' : isSelected ? colors.secondary : colors.card, borderColor: isCorrect ? colors.primary : isWrong ? colors.destructive : isSelected ? colors.primary : colors.border }]}><View style={[styles.optionDot, { borderColor: isCorrect ? colors.primary : isWrong ? colors.destructive : isSelected ? colors.primary : colors.border, backgroundColor: isCorrect ? colors.primary : isWrong ? colors.destructive : 'transparent' }]}>{(isCorrect || isWrong) && <Feather name={isCorrect ? 'check' : 'x'} size={11} color="#FFFFFF" />}</View><Text style={[styles.optionText, { color: colors.foreground }]}>{getLocalizedText(option, language)}</Text></Pressable>;
           })}
         </View>
-        {checked && <View style={[styles.feedback, { backgroundColor: selected === question.answer ? '#E5F3E8' : '#F8E8E5' }]}><Feather name={selected === question.answer ? 'check-circle' : 'info'} size={18} color={selected === question.answer ? colors.primary : colors.destructive} /><View style={{ flex: 1 }}><Text style={[styles.feedbackTitle, { color: colors.foreground }]}>{selected === question.answer ? 'Correct.' : 'Not quite.'}</Text><Text style={[styles.feedbackText, { color: colors.mutedForeground }]}>{question.explanation}</Text></View></View>}
-        {!checked ? <Pressable disabled={selected === null} onPress={checkAnswer} style={[styles.primaryButton, { backgroundColor: selected === null ? colors.border : colors.primary }]}><Text style={[styles.primaryButtonText, { color: selected === null ? colors.mutedForeground : colors.primaryForeground }]}>Check answer</Text><Feather name="arrow-right" size={17} color={selected === null ? colors.mutedForeground : colors.primaryForeground} /></Pressable> : step < questions.length - 1 ? <Pressable onPress={next} style={[styles.primaryButton, { backgroundColor: colors.primary }]}><Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>Next question</Text><Feather name="arrow-right" size={17} color={colors.primaryForeground} /></Pressable> : <Pressable onPress={() => router.back()} style={[styles.primaryButton, { backgroundColor: colors.primary }]}><Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>Back to course</Text><Feather name="check" size={17} color={colors.primaryForeground} /></Pressable>}
+        {checked && <View style={[styles.feedback, { backgroundColor: selected === question.answer ? '#E5F3E8' : '#F8E8E5' }]}><Feather name={selected === question.answer ? 'check-circle' : 'info'} size={18} color={selected === question.answer ? colors.primary : colors.destructive} /><View style={{ flex: 1 }}><Text style={[styles.feedbackTitle, { color: colors.foreground }]}>{selected === question.answer ? t('lesson.correct') : t('lesson.notQuite')}</Text><Text style={[styles.feedbackText, { color: colors.mutedForeground }]}>{getLocalizedText(question.explanation, language)}</Text></View></View>}
+        {!checked ? <Pressable disabled={selected === null} onPress={checkAnswer} style={[styles.primaryButton, { backgroundColor: selected === null ? colors.border : colors.primary }]}><Text style={[styles.primaryButtonText, { color: selected === null ? colors.mutedForeground : colors.primaryForeground }]}>{t('lesson.checkAnswer')}</Text><Feather name="arrow-right" size={17} color={selected === null ? colors.mutedForeground : colors.primaryForeground} /></Pressable> : step < lessonQuestions.length - 1 ? <Pressable onPress={next} style={[styles.primaryButton, { backgroundColor: colors.primary }]}><Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>{t('lesson.nextQuestion')}</Text><Feather name="arrow-right" size={17} color={colors.primaryForeground} /></Pressable> : <Pressable onPress={() => router.back()} style={[styles.primaryButton, { backgroundColor: colors.primary }]}><Text style={[styles.primaryButtonText, { color: colors.primaryForeground }]}>{t('lesson.backToCourse')}</Text><Feather name="check" size={17} color={colors.primaryForeground} /></Pressable>}
       </View>
     </ScrollView>
   );
