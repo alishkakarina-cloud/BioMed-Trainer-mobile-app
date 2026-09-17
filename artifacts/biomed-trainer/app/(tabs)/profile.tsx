@@ -48,7 +48,7 @@ export default function ProfileScreen() {
           { icon: 'bookmark', titleKey: 'profile.savedTopics', detailKey: 'profile.savedTopicsDetail' },
           { icon: 'credit-card', titleKey: 'profile.subscription', detailKey: 'profile.subscriptionDetail' },
           { icon: 'help-circle', titleKey: 'profile.help', detailKey: 'profile.helpDetail' },
-        ].map((item, index) => <Pressable key={item.titleKey} style={[styles.menuRow, index < 2 && { borderBottomWidth: 1, borderBottomColor: colors.border }]}><View style={[styles.menuIcon, { backgroundColor: colors.muted }]}><Feather name={item.icon as keyof typeof Feather.glyphMap} size={16} color={colors.primary} /></View><View style={{ flex: 1 }}><Text style={[styles.menuTitle, { color: colors.foreground }]}>{t(item.titleKey)}</Text><Text style={[styles.menuSub, { color: colors.mutedForeground }]}>{t(item.detailKey)}</Text></View><Feather name="chevron-right" size={17} color={colors.mutedForeground} /></Pressable>)}
+        ].map((item, index) => <Pressable key={item.titleKey} onPress={item.titleKey === 'profile.subscription' ? () => router.push('/subscription') : undefined} accessibilityRole="button" style={[styles.menuRow, index < 2 && { borderBottomWidth: 1, borderBottomColor: colors.border }]}><View style={[styles.menuIcon, { backgroundColor: colors.muted }]}><Feather name={item.icon as keyof typeof Feather.glyphMap} size={16} color={colors.primary} /></View><View style={{ flex: 1 }}><Text style={[styles.menuTitle, { color: colors.foreground }]}>{t(item.titleKey)}</Text><Text style={[styles.menuSub, { color: colors.mutedForeground }]}>{t(item.detailKey)}</Text></View><Feather name="chevron-right" size={17} color={colors.mutedForeground} /></Pressable>)}
       </View>
     </ScrollView>
   );

@@ -62,6 +62,26 @@
     "help": "Help & feedback",
     "helpDetail": "We are here to help"
   },
+  "subscription": {
+    "back": "Back to profile",
+    "kicker": "ACCESS PLANS",
+    "title": "Choose the right plan",
+    "subtitle": "Get access to interactive learning and BioMed Trainer practice tools",
+    "periodLabel": "BILLING PERIOD",
+    "periodMonthly": "1 month",
+    "periodSixMonths": "6 months",
+    "periodYearly": "1 year",
+    "pricePeriod": "per {{period}}",
+    "singleTitle": "One discipline",
+    "singleDescription": "Access to one selected discipline",
+    "allTitle": "All 7 disciplines",
+    "allDescription": "Full access to all seven BioMed Trainer disciplines",
+    "choosePlan": "Choose plan",
+    "selected": "Selected",
+    "selectionTitle": "Plan selected",
+    "selectionMessage": "{{plan}} · {{period}}",
+    "demoNote": "Payment is not connected yet. Selection currently works in demo mode."
+  },
   "languages": {
     "en": "English",
     "ru": "Русский",

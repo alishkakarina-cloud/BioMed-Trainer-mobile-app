@@ -62,6 +62,26 @@
     "help": "Көмек және кері байланыс",
     "helpDetail": "Біз көмектесуге дайынбыз"
   },
+  "subscription": {
+    "back": "Профильге оралу",
+    "kicker": "ҚОЛЖЕТІМДІЛІК ЖОСПАРЛАРЫ",
+    "title": "Сізге сай жоспарды таңдаңыз",
+    "subtitle": "BioMed Trainer интерактивті оқуы мен тренажерлеріне қол жеткізіңіз",
+    "periodLabel": "ТӨЛЕМ КЕЗЕҢІ",
+    "periodMonthly": "1 ай",
+    "periodSixMonths": "6 ай",
+    "periodYearly": "1 жыл",
+    "pricePeriod": "{{period}} үшін",
+    "singleTitle": "Бір пән",
+    "singleDescription": "Тек таңдалған пәнге қол жеткізу",
+    "allTitle": "Барлық 7 пән",
+    "allDescription": "BioMed Trainer-дің барлық жеті бағытына толық қол жеткізу",
+    "choosePlan": "Жоспарды таңдау",
+    "selected": "Таңдалды",
+    "selectionTitle": "Жоспар таңдалды",
+    "selectionMessage": "{{plan}} · {{period}}",
+    "demoNote": "Төлем әлі қосылмаған. Таңдау әзірше демо режимінде жұмыс істейді."
+  },
   "languages": {
     "en": "English",
     "ru": "Русский",

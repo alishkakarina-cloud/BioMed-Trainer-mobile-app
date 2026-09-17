@@ -62,6 +62,26 @@
     "help": "Помощь и обратная связь",
     "helpDetail": "Мы готовы помочь"
   },
+  "subscription": {
+    "back": "Вернуться в профиль",
+    "kicker": "ТАРИФЫ ДОСТУПА",
+    "title": "Выберите подходящий план",
+    "subtitle": "Получите доступ к интерактивному обучению и тренажёрам BioMed Trainer",
+    "periodLabel": "ПЕРИОД ОПЛАТЫ",
+    "periodMonthly": "1 месяц",
+    "periodSixMonths": "6 месяцев",
+    "periodYearly": "1 год",
+    "pricePeriod": "за {{period}}",
+    "singleTitle": "Одна дисциплина",
+    "singleDescription": "Доступ только к выбранной дисциплине",
+    "allTitle": "Все 7 дисциплин",
+    "allDescription": "Полный доступ ко всем семи направлениям BioMed Trainer",
+    "choosePlan": "Выбрать план",
+    "selected": "Выбрано",
+    "selectionTitle": "План выбран",
+    "selectionMessage": "{{plan}} · {{period}}",
+    "demoNote": "Оплата пока не подключена. Выбор работает в демонстрационном режиме."
+  },
   "languages": {
     "en": "English",
     "ru": "Русский",
