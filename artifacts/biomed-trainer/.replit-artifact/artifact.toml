@@ -1,0 +1,24 @@
+kind = "mobile"
+previewPath = "/"
+title = "BioMed Trainer"
+description = "A multilingual mobile learning companion for medical and biomedical students, with concise lessons, visual study blocks, interactive practice, clinical cases, progress tracking, and review queues across seven disciplines."
+version = "1.0.0"
+id = "artifacts/biomed-trainer"
+router = "expo-domain"
+
+[[services]]
+name = "expo"
+ensurePreviewReachable = "/status"
+paths = [ "/" ]
+localPort = 25176
+
+[services.development]
+run = "pnpm --filter @workspace/biomed-trainer run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/biomed-trainer", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/biomed-trainer", "run", "serve" ]
+
+[services.env]
+PORT = "25176"
+BASE_PATH = "/"

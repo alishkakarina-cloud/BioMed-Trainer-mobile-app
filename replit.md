@@ -1,10 +1,11 @@
-# [Project name]
+# BioMed Trainer
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+BioMed Trainer is a multilingual mobile study companion for medical and biomedical students, combining concise lessons, visual explanations, interactive practice, and spaced review.
 
 ## Run & Operate
 
 - `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/biomed-trainer run dev` — run the Expo mobile app through the managed mobile preview
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 - `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
@@ -22,23 +23,30 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/biomed-trainer/app/` — Expo Router screens for the dashboard, review queue, profile, courses, lessons, and onboarding
+- `artifacts/biomed-trainer/context/StudyContext.tsx` — local study progress, language, streak, and onboarding persistence
+- `artifacts/biomed-trainer/constants/colors.ts` — BioMed Trainer green visual tokens
+- `artifacts/biomed-trainer/assets/images/icon.png` — generated app icon
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- The first build is frontend-first and uses AsyncStorage for local progress so the learning flow works without a backend.
+- Expo Router tabs separate Home, Review, and Profile while course and lesson screens use stack navigation.
+- The demo lesson includes a complete answer-checking loop with feedback and completion persistence.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Dashboard with study streak, progress summary, a continue-learning lesson, and all seven planned disciplines.
+- Molecular biology course detail and an interactive DNA replication practice lesson.
+- Review queue, local progress tracking, language selector for English/Russian/Kazakh, profile and upgrade surfaces, and onboarding.
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+No additional preferences recorded.
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Expo preview is managed by the `artifacts/biomed-trainer: expo` workflow; use the workflow rather than starting Expo directly.
 
 ## Pointers
 
