@@ -1,0 +1,6 @@
+{
+  "installCommand": "pnpm install --frozen-lockfile",
+  "buildCommand": "pnpm --filter @workspace/biomed-trainer exec expo export --platform web",
+  "outputDirectory": "artifacts/biomed-trainer/dist",
+  "rewrites": [{ "source": "/(.*)", "destination": "/index.html" }]
+}
