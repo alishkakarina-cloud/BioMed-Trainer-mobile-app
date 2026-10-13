@@ -55,3 +55,7 @@ No additional preferences recorded.
 ## Pointers
 
 - See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+
+## Web preview
+
+- Public preview: https://biomed-trainer.vercel.app (auto-deployed from `main` via Vercel, config in `vercel.json`)
